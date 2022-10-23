@@ -1,4 +1,6 @@
-import { createContext, useContext, useReducer } from "react";
+import axios from "axios";
+import { createContext, useContext } from "react";
+import { useReducerAsync } from "use-reducer-async";
 
 const AuthContext = createContext();
 const AuthContextDispatch = createContext();
@@ -19,7 +21,23 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  const [value, dispatch] = useReducer(reducer, initialState);
+  const asyncActionHandlers = {
+    USER_INFO:
+      ({ dispatch }) =>
+      async (action) => {
+        dispatch({ type: "PENDING" });
+        await axios
+          .get("https://jsonplaceholder.typicode.com/users/1")
+          .then((res) => {
+            dispatch({ type: "SUCCESS", payload: res.data });
+          })
+          .catch((error) => {
+            dispatch({ type: "REJECT", payload: error.message });
+          });
+      },
+  };
+
+  const [value, dispatch] = useReducerAsync(reducer, initialState, asyncActionHandlers);
 
   return (
     <AuthContext.Provider value={value}>

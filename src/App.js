@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useAuth, useAuthDispatch } from "./context/AuthProvider";
 
 function App() {
@@ -6,15 +5,7 @@ function App() {
   const { loading, user, error } = useAuth();
 
   const getUserInfo = () => {
-    dispatch({ type: "PENDING" });
-    axios
-      .get("https://jsonplaceholder.typicode.com/users/1")
-      .then((res) => {
-        dispatch({ type: "SUCCESS", payload: res.data });
-      })
-      .catch((error) => {
-        dispatch({ type: "REJECT", payload: error.message });
-      });
+    dispatch({ type: "USER_INFO" });
   };
 
   return (
